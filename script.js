@@ -397,28 +397,26 @@ const canvas = await window.html2canvas(target, {
 
   onclone: (clonedDocument) => {
     clonedDocument.querySelectorAll(".status-badge").forEach((badge) => {
-      // Ambil teks status langsung secara bersih
       const textSpan = badge.querySelector(".status-text");
-      const status = textSpan ? textSpan.textContent.trim() : badge.textContent.trim();
+      const status = textSpan ? textSpan.textContent.trim() : "Menunggu";
       const isSuccess = status.toLowerCase() === "success";
 
-      // Paksa warna background, border, dan properti agar tidak rusak saat diunduh
+      // Ubah langsung isi HTML di dalam badge saat dikloning agar tidak ada konflik nested span
       badge.style.setProperty("background", isSuccess ? "#00a978" : "#b98500", "important");
       badge.style.setProperty("background-image", "none", "important");
       badge.style.setProperty("color", "#ffffff", "important");
       badge.style.setProperty("border", isSuccess ? "1px solid #00e6a0" : "1px solid #ffd632", "important");
-      badge.style.setProperty("opacity", "1", "important");
-      badge.style.setProperty("visibility", "visible", "important");
       badge.style.setProperty("display", "inline-flex", "important");
+      badge.style.setProperty("align-items", "center", "important");
+      badge.style.setProperty("justify-content", "center", "important");
+      badge.style.setProperty("padding", "6px 12px", "important");
+      badge.style.setProperty("border-radius", "999px", "important");
 
-      // Pastikan seluruh teks di dalam badge (ikon dan tulisan) berwarna putih dan terlihat jelas
-      badge.querySelectorAll("span").forEach((span) => {
-        span.style.setProperty("color", "#ffffff", "important");
-        span.style.setProperty("-webkit-text-fill-color", "#ffffff", "important");
-        span.style.setProperty("opacity", "1", "important");
-        span.style.setProperty("visibility", "visible", "important");
-        span.style.setProperty("display", "inline-block", "important");
-      });
+      // Render ulang teks secara langsung di dalam badge untuk menghindari bug html2canvas pada span bertingkat
+      badge.innerHTML = `
+        <span style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; font-size: 13px !important; font-weight: 700 !important; margin-right: 4px !important;">${isSuccess ? "✓" : "◷"}</span>
+        <span style="color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; font-size: 13px !important; font-weight: 700 !important;">${status}</span>
+      `;
     });
   }
 });
