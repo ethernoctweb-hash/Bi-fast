@@ -397,58 +397,31 @@ const canvas = await window.html2canvas(target, {
 
   onclone: (clonedDocument) => {
     clonedDocument.querySelectorAll(".status-badge").forEach((badge) => {
-      const statusElement = badge.querySelector("span:last-child");
-      const status = statusElement
-        ? statusElement.textContent.trim()
-        : badge.textContent.trim();
-
+      // Ambil teks status langsung secara bersih
+      const textSpan = badge.querySelector(".status-text");
+      const status = textSpan ? textSpan.textContent.trim() : badge.textContent.trim();
       const isSuccess = status.toLowerCase() === "success";
 
-      // Paksa warna background dan teks saat proses ekspor.
-      badge.style.setProperty(
-        "background",
-        isSuccess ? "#07875d" : "#9a7000",
-        "important"
-      );
-
-      badge.style.setProperty(
-        "background-image",
-        "none",
-        "important"
-      );
-
-      badge.style.setProperty(
-        "color",
-        "#ffffff",
-        "important"
-      );
-
-      badge.style.setProperty(
-        "border",
-        isSuccess
-          ? "1px solid #00e6a0"
-          : "1px solid #ffd632",
-        "important"
-      );
-
+      // Paksa warna background, border, dan properti agar tidak rusak saat diunduh
+      badge.style.setProperty("background", isSuccess ? "#00a978" : "#b98500", "important");
+      badge.style.setProperty("background-image", "none", "important");
+      badge.style.setProperty("color", "#ffffff", "important");
+      badge.style.setProperty("border", isSuccess ? "1px solid #00e6a0" : "1px solid #ffd632", "important");
       badge.style.setProperty("opacity", "1", "important");
       badge.style.setProperty("visibility", "visible", "important");
       badge.style.setProperty("display", "inline-flex", "important");
-      badge.style.setProperty("overflow", "visible", "important");
 
+      // Pastikan seluruh teks di dalam badge (ikon dan tulisan) berwarna putih dan terlihat jelas
       badge.querySelectorAll("span").forEach((span) => {
         span.style.setProperty("color", "#ffffff", "important");
         span.style.setProperty("-webkit-text-fill-color", "#ffffff", "important");
         span.style.setProperty("opacity", "1", "important");
         span.style.setProperty("visibility", "visible", "important");
         span.style.setProperty("display", "inline-block", "important");
-        span.style.setProperty("font-size", "13px", "important");
-        span.style.setProperty("font-weight", "700", "important");
       });
     });
   }
 });
-
 
       const blob = await new Promise(resolve => {
         canvas.toBlob(resolve, "image/png");
